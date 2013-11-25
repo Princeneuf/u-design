@@ -30,6 +30,8 @@ class UDESIGN_Theme_Options {
 	    if( $udesign_options['reset_to_defaults'] == 'yes' ) delete_option( "udesign_options");
 	    if (! get_option("udesign_options")) {
 		add_option( "udesign_options",
+
+            //初始化主题配置项
 		    array( // intitialize the 'udesign_options' array with the following key => value pairs:
 			    "reset_to_defaults" => '',
 			    "color_scheme" => "1",
@@ -355,11 +357,25 @@ class UDESIGN_Theme_Options {
 	function udesign_admin_menu() {
 		$this->init_udesign_theme_options();
 		//Add the U-Design options page to the Themes' menu
-		$this->pagehook = add_menu_page('U-Design Theme', esc_html__('U-Design', 'udesign'), 'manage_options', 'udesign_options_page', array(&$this, 'udesign_generate_options_page'));
-		add_action('load-'.$this->pagehook, array(&$this, 'on_load_page'));
+        //添加顶级菜单
+        /*add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function = '', $icon_url = '', $position = null )
+         * $page_title   head  title 浏览器title显示
+         * $menu_title   左侧一级菜单
+         *
+         *
+         * */
+		$this->pagehook = add_menu_page('U-Design 主题', esc_html__('U-Design主题', 'udesign'), 'manage_options', 'udesign_options_page', array(&$this, 'udesign_generate_options_page'));
+
+        add_action('load-'.$this->pagehook, array(&$this, 'on_load_page'));
 	}
 
 	function on_load_page() {
+        /*
+         *
+         * wp_enqueue_style
+         *wp_enqueue_script
+         * 加入队列   就是加载文件
+         * */
 
 		wp_enqueue_style('style', get_template_directory_uri().'/scripts/admin/style.css', false, '1.0', 'screen');
 		wp_enqueue_style('thickbox');
@@ -379,18 +395,24 @@ class UDESIGN_Theme_Options {
 		wp_enqueue_script('common');
 		wp_enqueue_script('wp-lists');
 		wp_enqueue_script('postbox');
-
-		add_meta_box('udesign-help-options-metabox', esc_html__('Help', 'udesign'), array(&$this, 'help_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-general-options-metabox', esc_html__('General Options', 'udesign'), array(&$this, 'general_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-font-settings-metabox', esc_html__('Font Settings', 'udesign'), array(&$this, 'font_settings_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-custom-colors-metabox', esc_html__('Custom Colors', 'udesign'), array(&$this, 'custom_colors_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-front-page-options-metabox', esc_html__('Front Page Sliders', 'udesign'), array(&$this, 'front_page_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-portfolio-section-options-metabox', esc_html__('Portfolio Section', 'udesign'), array(&$this, 'portfolio_section_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-blog-section-options-metabox', esc_html__('Blog Section', 'udesign'), array(&$this, 'blog_section_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-contact_page-options-metabox', esc_html__('Contact Page', 'udesign'), array(&$this, 'contact_page_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-footer-options-metabox', esc_html__('Footer Options', 'udesign'), array(&$this, 'footer_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-statistics-options-metabox', esc_html__('Statistics', 'udesign'), array(&$this, 'statistics_options_contentbox'), $this->pagehook, 'normal', 'core');
-		add_meta_box('udesign-responsive-options-metabox', esc_html__('Responsive Layout', 'udesign'), array(&$this, 'responsive_options_contentbox'), $this->pagehook, 'normal', 'core');
+        /*
+         * add_meta_box
+         * add_meta_box( $id, $title, $callback, $screen = null, $context = 'advanced', $priority = 'default', $callback_args = null )
+         * 往form里添加 h3  标题
+         * $title    h3 标题
+         * $callback   是实现函数
+         * */
+		add_meta_box('udesign-help-options-metabox', esc_html__('帮助', 'udesign'), array(&$this, 'help_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-general-options-metabox', esc_html__('常规', 'udesign'), array(&$this, 'general_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-font-settings-metabox', esc_html__('字体', 'udesign'), array(&$this, 'font_settings_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-custom-colors-metabox', esc_html__('定义颜色', 'udesign'), array(&$this, 'custom_colors_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-front-page-options-metabox', esc_html__('首页幻灯片', 'udesign'), array(&$this, 'front_page_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-portfolio-section-options-metabox', esc_html__('文件夹/公文包', 'udesign'), array(&$this, 'portfolio_section_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-blog-section-options-metabox', esc_html__('博客', 'udesign'), array(&$this, 'blog_section_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-contact_page-options-metabox', esc_html__('联系页面', 'udesign'), array(&$this, 'contact_page_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-footer-options-metabox', esc_html__('底部', 'udesign'), array(&$this, 'footer_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-statistics-options-metabox', esc_html__('统计', 'udesign'), array(&$this, 'statistics_options_contentbox'), $this->pagehook, 'normal', 'core');
+		add_meta_box('udesign-responsive-options-metabox', esc_html__('页面布局', 'udesign'), array(&$this, 'responsive_options_contentbox'), $this->pagehook, 'normal', 'core');
 	}
 
 	function udesign_generate_options_page() {
@@ -1149,74 +1171,80 @@ class UDESIGN_Theme_Options {
 	/**************************************************************************************/
 	/**** Below you will find the callback method for each of the registered metaboxes ****/
 	/**************************************************************************************/
-
+    //帮助  tab
 	function help_options_contentbox( $options ) { ?>
-		<p style="font-size:12px; margin-left:5px;"><?php esc_html_e('U-Design theme help resources:', 'udesign'); ?></p>
+		<p style="font-size:12px; margin-left:5px;"><?php esc_html_e('U-Design 主题  帮助信息:', 'udesign'); ?></p>
 		<ul style="list-style-type:none; margin:5px 5px 10px 20px;">
-		    <li><?php echo '<div><a href="'.get_bloginfo('template_url').'/scripts/documentation/index.html" title="Open Documentation in a new window..."  target="_blank">'.esc_html__('Documentation', 'udesign').'</a></div>'; ?></li>
-		    <li><?php echo '<div><a href="http://www.youtube.com/user/internq7" target="_blank">'.esc_html__('Video Tutorials (Author\'s YouTube Tutorials Channel)', 'udesign').'</a></div>'; ?></li>
-		    <li><?php echo '<div><a href="http://www.universallyacclaimed.com/wp-themes/u-design/" target="_blank">'.esc_html__('U-Design Demo Site', 'udesign').'</a></div>'; ?></li>
+		    <li><?php echo '<div><a href="'.get_bloginfo('template_url').'/scripts/documentation/index.html" title="Open Documentation in a new window..."  target="_blank">'.esc_html__('使用文档', 'udesign').'</a></div>'; ?></li>
+		    <li><?php echo '<div><a href="http://www.youtube.com/user/internq7" target="_blank">'.esc_html__('视频教程', 'udesign').'</a></div>'; ?></li>
+		    <li><?php echo '<div><a href="http://www.universallyacclaimed.com/wp-themes/u-design/" target="_blank">'.esc_html__('U-Design 在线演示', 'udesign').'</a></div>'; ?></li>
 		    <li><?php echo '<div><a href="http://www.universallyacclaimed.com/wp-themes/u-design/?page_id=59" target="_blank">'.esc_html__('U-Design Shortcodes', 'udesign').'</a></div>'; ?></li>
-		    <li><?php echo '<div><a href="http://www.universallyacclaimed.com/wp-themes/u-design/?page_id=1417" target="_blank">'.esc_html__('Get the Code: All of the Home page examples source code is available here.', 'udesign').'</a></div>'; ?></li>
-		    <li><?php echo '<div><a href="http://dreamthemedesign.com/u-design-support/" target="_blank">'.esc_html__('Support Forum', 'udesign').'</a></div>'; ?></li>
-		    <li><?php echo '<div><a href="http://themeforest.net/user/internq7/#from" target="_blank">'.esc_html__('Contact the Author', 'udesign').'</a></div>'; ?></li>
+		    <li><?php echo '<div><a href="http://www.universallyacclaimed.com/wp-themes/u-design/?page_id=1417" target="_blank">'.esc_html__('下载代码', 'udesign').'</a></div>'; ?></li>
+		    <li><?php echo '<div><a href="http://dreamthemedesign.com/u-design-support/" target="_blank">'.esc_html__('论坛', 'udesign').'</a></div>'; ?></li>
+		    <li><?php echo '<div><a href="http://themeforest.net/user/internq7/#from" target="_blank">'.esc_html__('联系作者', 'udesign').'</a></div>'; ?></li>
 		</ul>
 <?php	}
-
+    //常规设置
 	function general_options_contentbox( $options ) {
 		$home_page_col_1_fixed =  $options['home_page_col_1_fixed'];
 		$sitemap_sidebar = $options['sitemap_sidebar']; ?>
 		<table class="form-table">
 		    <tbody>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Custom Logo', 'udesign'); ?></th>
+                <!--
+
+                esc_html_e( $text, $domain = 'default' )
+                Display translated text that has been escaped for safe use in HTML output.
+
+                -->
+			    <th scope="row"><?php esc_html_e('自定义 Logo', 'udesign'); ?></th>
 			    <td>
                                 <div style="margin-bottom:5px;  padding:0; float:left;">
-                                    <label for="custom_logo_img"><?php esc_html_e('Enter a URL or upload an image for your logo:', 'udesign'); ?></label><br />
+                                    <label for="custom_logo_img"><?php esc_html_e('支持URL和图片上传:', 'udesign'); ?></label><br />
                                     <input name="udesign_options[custom_logo_img]" type="text" id="custom_logo_img" value="<?php if( $options['custom_logo_img'] ){ echo esc_url($options['custom_logo_img']); } ?>" size="65" />
                                     <input id="upload_logo_button" type="button" value="<?php esc_attr_e('Upload Logo', 'udesign'); ?>" class="button-secondary" />
                                 </div>
                                 <div class="clear"></div>
-				<span class="description"><?php esc_html_e('To upload an image click on "Upload Logo" button. Once the image is uploaded it will give you various options. Click on "Insert into Post" button. Once you click on "Insert into Post", link with the uploaded image will be inserted into the text field above.', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Top Area Height', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('顶部高度', 'udesign'); ?></th>
 			    <td>
 				<input name="udesign_options[top_area_height]" type="text" id="top_area_height" value="<?php echo esc_attr($options['top_area_height']); ?>" size="5" maxlength="4" />
-				px <span class="description"><?php esc_html_e('(Height) in pixels.', 'udesign'); ?><br />
-				<?php esc_html_e('Note: the minimum recommended height is 55px.', 'udesign'); ?></span>
+				px <span class="description"><?php esc_html_e('高度(px).', 'udesign'); ?><br />
+				<?php esc_html_e('最小55px.', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Logo Dimensions', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('Logo 大小', 'udesign'); ?></th>
 			    <td>
 				<input name="udesign_options[logo_width]" type="text" id="logo_width" value="<?php echo esc_attr($options['logo_width']); ?>" size="5" maxlength="4" />
 				<span> X </span>
 				<input name="udesign_options[logo_height]" type="text" id="logo_height" value="<?php echo esc_attr($options['logo_height']); ?>" size="5" maxlength="4" />
-				px <span class="description"><?php esc_html_e('(Width X Height) in pixels.', 'udesign'); ?></span>
+				px <span class="description"><?php esc_html_e('px.', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><label for="slogan_distance_from_the_top"><?php esc_html_e('Slogan Position from the Top', 'udesign'); ?></label></th>
+			    <th scope="row"><label for="slogan_distance_from_the_top"><?php esc_html_e('标题距离顶部', 'udesign'); ?></label></th>
 			    <td>
 				<input name="udesign_options[slogan_distance_from_the_top]" type="text" id="slogan_distance_from_the_top" value="<?php echo esc_attr($options['slogan_distance_from_the_top']); ?>" size="5" maxlength="3" />
-				<span> px <?php esc_html_e('from the top.', 'udesign'); ?></span>
+				<span> px <?php esc_html_e('', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><label for="slogan_distance_from_the_left"><?php esc_html_e('Slogan Position from the Left', 'udesign'); ?></label></th>
+			    <th scope="row"><label for="slogan_distance_from_the_left"><?php esc_html_e('标题距离左侧', 'udesign'); ?></label></th>
 			    <td>
 				<input name="udesign_options[slogan_distance_from_the_left]" type="text" id="slogan_distance_from_the_left" value="<?php echo esc_attr($options['slogan_distance_from_the_left']); ?>" size="5" maxlength="3" />
-				<span> px <?php esc_html_e('from the left. Enter a number between 0 and 400.', 'udesign'); ?></span><br />
-				<span class="description"><?php  printf( __('Please note that the actual Slogan text can be changed or deleted at %1$sSettings -> General%2$s <strong>Tagline</strong> option.', 'udesign'), '<a href="options-general.php">', '</a>' ); ?></span>
+				<span> px <?php esc_html_e('[0~400].', 'udesign'); ?></span><br />
+				<span class="description"><?php  printf( __('标题内容修改 %1$sSettings -> General%2$s <strong>Tagline</strong> 项.', 'udesign'), '<a href="options-general.php">', '</a>' ); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Slogan Font Size', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('标题字体大小', 'udesign'); ?></th>
 			    <td>
 				<label for="slogan_font_size">
-					<?php esc_html_e('Font Size: ', 'udesign'); ?>
+					<?php esc_html_e('字体大小: ', 'udesign'); ?>
 					<select name="udesign_options[slogan_font_size]" id="slogan_font_size">
 					    <option value="8"<?php echo ($options['slogan_font_size'] == '8') ? ' selected="selected"' : ''; ?>>8px</option>
 					    <option value="9"<?php echo ($options['slogan_font_size'] == '9') ? ' selected="selected"' : ''; ?>>9px</option>
@@ -1246,125 +1274,125 @@ class UDESIGN_Theme_Options {
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Phone Number Information', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('电话号码', 'udesign'); ?></th>
 			    <td>
 				<input name="udesign_options[top_page_phone_number]" type="text" id="top_page_phone_number" value="<?php if ($options['top_page_phone_number']) { echo esc_attr($options['top_page_phone_number'], 'udesign'); } ?>" size="30" maxlength="500" />
-				<?php esc_html_e('Use this field to provide a phone number or any other short piece of information (30 character limit for display).  It is displayed near the search box located at the top right corner of the theme.', 'udesign'); ?>
+				<?php esc_html_e('0~30.将会显示在右上方搜索框下.', 'udesign'); ?>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Search Box', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('搜索', 'udesign'); ?></th>
 			    <td>
 				<label for="enable_search">
 				    <input name="udesign_options[enable_search]" type="checkbox" id="enable_search" value="yes" <?php checked('yes', $options['enable_search']); ?> />
-				    <?php esc_html_e('Enable the Search box displayed in the top area of the page.', 'udesign'); ?>
+				    <?php esc_html_e('开启.', 'udesign'); ?>
 				</label>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Page Peel', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('页角', 'udesign'); ?></th>
 			    <td>
 				<label for="enable_page_peel">
 				    <input name="udesign_options[enable_page_peel]" type="checkbox" id="enable_page_peel" value="yes" <?php checked('yes', $options['enable_page_peel']); ?> />
-				    <?php esc_html_e('Enable Page Peel (Display the page curl/peel located in the top right corner of the site).  Could be used for your FeedBurner subscription or advertising.', 'udesign'); ?>
+				    <?php esc_html_e('广告或者RSS', 'udesign'); ?>
 				</label><br />
-				<label for="page_peel_url"><?php esc_html_e('Page Peel Link URL:', 'udesign'); ?></label>
+				<label for="page_peel_url"><?php esc_html_e('URL:', 'udesign'); ?></label>
 				<input name="udesign_options[page_peel_url]" type="text" id="page_peel_url" value="<?php if ($options['page_peel_url']) { echo esc_attr($options['page_peel_url'], 'udesign'); } ?>" size="50" maxlength="100" />
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Feedback Button', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('Feedback', 'udesign'); ?></th>
 			    <td>
 				<label for="enable_feedback">
 				    <input name="udesign_options[enable_feedback]" type="checkbox" id="enable_feedback" value="yes" <?php checked('yes', $options['enable_feedback']); ?> />
-				    <?php esc_html_e('Enable Feedback button (Display the Feedback button located in the most left side of the site)', 'udesign'); ?>
+				    <?php esc_html_e('开启', 'udesign'); ?>
 				</label><br />
-				<label for="feedback_url"><?php esc_html_e('Feedback Button URL:', 'udesign'); ?></label>
+				<label for="feedback_url"><?php esc_html_e('Feedback URL:', 'udesign'); ?></label>
 				<input name="udesign_options[feedback_url]" type="text" id="feedback_url" value="<?php if ($options['feedback_url']) { echo esc_attr($options['feedback_url'], 'udesign'); } ?>" size="50" maxlength="100" />
                                 <br />
 				<label for="feedback_position_fixed">
 				    <input name="udesign_options[feedback_position_fixed]" type="checkbox" id="feedback_position_fixed" value="yes" <?php checked('yes', $options['feedback_position_fixed']); ?> />
-				    <?php esc_html_e('Fix the position of the "Feedback" button to prevent it from scrolling with the page.', 'udesign'); ?>
+				    <?php esc_html_e('校正Feedback 按钮.', 'udesign'); ?>
 				</label>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Enable prettyPhoto script', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('开启 prettyPhoto script', 'udesign'); ?></th>
 			    <td>
 				<label for="enable_prettyPhoto_script">
 				    <input name="udesign_options[enable_prettyPhoto_script]" type="checkbox" id="enable_prettyPhoto_script" value="yes" <?php checked('yes', $options['enable_prettyPhoto_script']); ?> />
-				<?php printf( __('Enable %1$sprettyPhoto%2$s script. In case of conflicts with some other lightbox plugins you may wish to disable the %1$sprettyPhoto%2$s script.', 'udesign'), '<a href="http://www.no-margin-for-errors.com/projects/prettyphoto-jquery-lightbox-clone/" target="_blank" title="Go to prettyPhoto website">', '</a>'); ?>
+				<?php printf( __('开启 %1$sprettyPhoto%2$s . 如果产生冲突请禁用 %1$sprettyPhoto%2$s .', 'udesign'), '<a href="http://www.no-margin-for-errors.com/projects/prettyphoto-jquery-lightbox-clone/" target="_blank" title="Go to prettyPhoto website">', '</a>'); ?>
 				</label>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Main Menu Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('主菜单位置', 'udesign'); ?></th>
 			    <td>
-				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
+				<?php esc_html_e('选择:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[main_menu_position]" id="main_menu_position_left" value="left" <?php checked('left', $options['main_menu_position']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[main_menu_position]" id="main_menu_position_right" value="right" <?php checked('right', $options['main_menu_position']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This option sets the main navigation menu alignment.', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('横向排列.', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Breadcrumbs', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('面包屑', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Show Breadcrumbs', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('显示', 'udesign'); ?></span></legend>
 				<label for="show_breadcrumbs">
 				    <input name="udesign_options[show_breadcrumbs]" type="checkbox" id="show_breadcrumbs" value="yes" <?php checked('yes', $options['show_breadcrumbs']); ?> />
-				    <?php esc_html_e('Show Breadcrumbs', 'udesign'); ?>
+				    <?php esc_html_e('显示', 'udesign'); ?>
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Top Menu Auto Arrows', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('顶部菜单自动箭头', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Top Menu Auto Arrows', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('顶部菜单自动箭头', 'udesign'); ?></span></legend>
 				<label for="show_menu_auto_arrows">
 				    <input name="udesign_options[show_menu_auto_arrows]" type="checkbox" id="show_menu_auto_arrows" value="yes" <?php checked('yes', $options['show_menu_auto_arrows']); ?> />
-				    <?php esc_html_e("Show the top navigation menu's auto arrows. Those are the arrows indicating a submenu. ", 'udesign'); ?>
+				    <?php esc_html_e("标注下级子菜单. ", 'udesign'); ?>
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Top Menu Drop Shadows', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('顶部菜单下拉阴影', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Top Menu Drop Shadows', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('顶部菜单下拉阴影', 'udesign'); ?></span></legend>
 				<label for="show_menu_drop_shadows">
 				    <input name="udesign_options[show_menu_drop_shadows]" type="checkbox" id="show_menu_drop_shadows" value="yes" <?php checked('yes', $options['show_menu_drop_shadows']); ?> />
-				    <?php esc_html_e("Enable drop shadows to the sub-menus. ", 'udesign'); ?>
+				    <?php esc_html_e("允许子级菜单下拉阴影. ", 'udesign'); ?>
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Border Under the Menu', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('菜单边界', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Border Under the Menu', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('菜单边界', 'udesign'); ?></span></legend>
 				<label for="remove_border_under_menu">
 				    <input name="udesign_options[remove_border_under_menu]" type="checkbox" id="remove_border_under_menu" value="yes" <?php checked('yes', $options['remove_border_under_menu']); ?> />
-				    <?php esc_html_e("Remove the border line located under the menu. ", 'udesign'); ?>
+				    <?php esc_html_e("去掉菜单边界线. ", 'udesign'); ?>
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Post Thumbnail', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认文章缩略图', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Enable Default Thumb', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('默认文章缩略图', 'udesign'); ?></span></legend>
 				<label for="default_thumb_on">
 				    <input name="udesign_options[default_thumb_on]" type="checkbox" id="default_thumb_on" value="yes" <?php checked('yes', $options['default_thumb_on']); ?> />
-				    <?php esc_html_e('Enable default thumbnail for posts (This options is used with the "U-Design: Recent Posts" widget).', 'udesign'); ?>
+				    <?php esc_html_e('开启(used with "U-Design: Recent Posts" widget).', 'udesign'); ?>
 				</label>
 				</fieldset>
 			    </td>
                         </tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Home Page Column 1', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('首页--单列', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Home Page Column 1', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('首页--单列', 'udesign'); ?></span></legend>
 				    <label for="home_page_col_1_fixed">
 					<input name="udesign_options[home_page_col_1_fixed]" type="checkbox" id="home_page_col_1_fixed" value="yes" <?php checked('yes', $home_page_col_1_fixed); ?> />
 					<?php esc_html_e('Set the width of the "Home Page Column 1" Widget Area as constant 1/3 width (Applies only to a two column layout, in other words having the first widget area "Home Page Column 1" in combination with any of the other widget areas being active).', 'udesign'); ?><br />
@@ -1378,7 +1406,7 @@ class UDESIGN_Theme_Options {
 		  <table class="form-table">
 		    <tbody>
                         <tr valign="top">
-                            <th scope="row"><?php esc_html_e('Page Title', 'udesign'); ?></th>
+                            <th scope="row"><?php esc_html_e('页面标题', 'udesign'); ?></th>
                             <td>
                                 <label for="page_title_position" class="link-target" style="float:left; display:inline-block;">
                                         <select name="udesign_options[page_title_position]" id="page_title_position">
@@ -1406,112 +1434,112 @@ class UDESIGN_Theme_Options {
                   <table class="form-table">
 		    <tbody>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏1位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar]" id="pages_sidebar_left" value="left" <?php checked('left', $options['pages_sidebar']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar]" id="pages_sidebar_right" value="right" <?php checked('right', $options['pages_sidebar']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Default Template".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于"Default Template".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar 2 Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏2位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar_2]" id="pages_sidebar_2_left" value="left" <?php checked('left', $options['pages_sidebar_2']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar_2]" id="pages_sidebar_2_right" value="right" <?php checked('right', $options['pages_sidebar_2']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Page Template 2".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于 "Page Template 2".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar 3 Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏3位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar_3]" id="pages_sidebar_3_left" value="left" <?php checked('left', $options['pages_sidebar_3']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar_3]" id="pages_sidebar_3_right" value="right" <?php checked('right', $options['pages_sidebar_3']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Page Template 3".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于 "Page Template 3".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar 4 Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏4位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar_4]" id="pages_sidebar_4_left" value="left" <?php checked('left', $options['pages_sidebar_4']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar_4]" id="pages_sidebar_4_right" value="right" <?php checked('right', $options['pages_sidebar_4']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Page Template 4".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于 "Page Template 4".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar 5 Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏5位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar_5]" id="pages_sidebar_5_left" value="left" <?php checked('left', $options['pages_sidebar_5']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar_5]" id="pages_sidebar_5_right" value="right" <?php checked('right', $options['pages_sidebar_5']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Page Template 5".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于 "Page Template 5".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar 6 Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏6位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar_6]" id="pages_sidebar_6_left" value="left" <?php checked('left', $options['pages_sidebar_6']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar_6]" id="pages_sidebar_6_right" value="right" <?php checked('right', $options['pages_sidebar_6']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Page Template 6".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于 "Page Template 6".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar 7 Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏7位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar_7]" id="pages_sidebar_7_left" value="left" <?php checked('left', $options['pages_sidebar_7']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar_7]" id="pages_sidebar_7_right" value="right" <?php checked('right', $options['pages_sidebar_7']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Page Template 7".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于"Page Template 7".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Default Pages Sidebar 8 Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('默认侧边工具栏8位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[pages_sidebar_8]" id="pages_sidebar_8_left" value="left" <?php checked('left', $options['pages_sidebar_8']); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[pages_sidebar_8]" id="pages_sidebar_8_right" value="right" <?php checked('right', $options['pages_sidebar_8']); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Page Template 8".', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于 "Page Template 8".', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Sitemap Page Sidebar Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('网站地图页面侧边栏位置', 'udesign'); ?></th>
 			    <td>
 				<?php esc_html_e('Choose position:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[sitemap_sidebar]" id="sitemap_sidebar_left" value="left" <?php checked('left', $sitemap_sidebar); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[sitemap_sidebar]" id="sitemap_sidebar_right" value="right" <?php checked('right', $sitemap_sidebar); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar position for all pages assigned with "Sitemap page" template.', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('适用于"Sitemap page" template.', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Show Comments on Pages', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('显示评论', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Show Comments on Pages', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('显示评论', 'udesign'); ?></span></legend>
 				<label for="show_comments_on_pages">
 				    <input name="udesign_options[show_comments_on_pages]" type="checkbox" id="show_comments_on_pages" value="yes" <?php checked('yes', $options['show_comments_on_pages']); ?> />
-				    <?php esc_html_e("Show Comments on Pages. Those are the pages assigned with the 'Default Page', 'Page Template 2', ..., 'Page Template 8' and 'Full-width Page' templates. Additionally, you can 'Allow' these comments from the individual page's configuration.", 'udesign'); ?>
+				    <?php esc_html_e("适用于'Default Page', 'Page Template 2', ..., 'Page Template 8' and 'Full-width Page' templates. Additionally, you can 'Allow' these comments from the individual page's configuration.", 'udesign'); ?>
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php printf( __('Disable Theme Update Notifier', 'udesign'), '<code>', '</code>'); ?></th>
+			    <th scope="row"><?php printf( __('禁用主题更新通知', 'udesign'), '<code>', '</code>'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Disable Theme Update Notifier', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('禁用主题更新通知', 'udesign'); ?></span></legend>
 				<label for="disable_the_theme_update_notifier">
 				    <input name="udesign_options[disable_the_theme_update_notifier]" type="checkbox" id="disable_the_theme_update_notifier" value="yes" <?php checked('yes', $options['disable_the_theme_update_notifier']); ?> />
-                                    <?php esc_html_e("Disable the theme's notification of new updates.", 'udesign'); ?>
+                                    <?php esc_html_e("禁用主题更新通知", 'udesign'); ?>
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Disable TimThumb', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('禁用TimThumb', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Disable TimThumb', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('禁用TimThumb', 'udesign'); ?></span></legend>
 				<label for="disable_timthumb">
 				    <input name="udesign_options[disable_timthumb]" type="checkbox" id="disable_timthumb" value="yes" <?php checked('yes', $options['disable_timthumb']); ?> />
                                     <?php esc_html_e("Disable the use of TimThumb script for cropping images.", 'udesign'); ?>
@@ -1520,9 +1548,9 @@ class UDESIGN_Theme_Options {
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php printf( __('Enable %1$sstyle.css%2$s', 'udesign'), '<code>', '</code>'); ?></th>
+			    <th scope="row"><?php printf( __('开启 %1$sstyle.css%2$s', 'udesign'), '<code>', '</code>'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Enable "style.css"', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('开启 "style.css"', 'udesign'); ?></span></legend>
 				<label for="enable_default_style_css">
 				    <input name="udesign_options[enable_default_style_css]" type="checkbox" id="enable_default_style_css" value="yes" <?php checked('yes', $options['enable_default_style_css']); ?> />
                                     <?php printf( __('Enable the %1$sstyle.css%2$s located in the theme\'s root folder. You can then edit that file from %3$sAppearance -> Edit%4$s to add any custom CSS. You would also need to enable this option if you want to use a %5$schild theme%6$s.', 'udesign'), '<code>', '</code>', '<a href="theme-editor.php">', '</a>', '<a target="_blank" title="More Info on WordPress Child Themes..." href="http://codex.wordpress.org/Child_Themes">', '</a>'); ?>
@@ -1534,7 +1562,7 @@ class UDESIGN_Theme_Options {
 		</table>
 <?php		display_save_changes_button(); ?>
 <?php	}
-
+    //字体
 	function font_settings_contentbox( $options ) {
 		global $google_webfonts, $cufon_fonts; ?>
 		<table class="form-table">
@@ -1559,10 +1587,10 @@ class UDESIGN_Theme_Options {
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('General Font Settings', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('字体', 'udesign'); ?></th>
 			    <td>
 				<label for="font_family" style="float:left; width:220px;">
-					<?php esc_html_e('Font Family: ', 'udesign'); ?><br />
+					<?php esc_html_e('字体: ', 'udesign'); ?><br />
 					<select name="udesign_options[font_family]" id="font_family" style="width:200px;">
 					    <option value="Arial"<?php echo ($options['font_family'] == 'Arial') ? ' selected="selected"' : ''; ?>>Arial</option>
 					    <option value="Comic Sans MS"<?php echo ($options['font_family'] == 'Comic Sans MS') ? ' selected="selected"' : ''; ?>>Comic Sans MS</option>
@@ -1585,7 +1613,7 @@ class UDESIGN_Theme_Options {
 					</select>
 				</label>
 				<label for="font_size" style="float:left; width:100px;">
-					<?php esc_html_e('Font Size: ', 'udesign'); ?><br />
+					<?php esc_html_e('字体大小: ', 'udesign'); ?><br />
 					<select name="udesign_options[font_size]" id="font_size" style="padding-right:5px;">
 					    <option value="8"<?php echo ($options['font_size'] == '8') ? ' selected="selected"' : ''; ?>>8px</option>
 					    <option value="9"<?php echo ($options['font_size'] == '9') ? ' selected="selected"' : ''; ?>>9px</option>
@@ -1615,10 +1643,10 @@ class UDESIGN_Theme_Options {
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Top Navigation Menu Font Settings', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('顶部导航字体设置', 'udesign'); ?></th>
 			    <td>
 				<label for="top_nav_font_family" style="float:left; width:220px;">
-					<?php esc_html_e('Font Family: ', 'udesign'); ?><br />
+					<?php esc_html_e('字体: ', 'udesign'); ?><br />
 					<select name="udesign_options[top_nav_font_family]" id="top_nav_font_family" style="width:200px;">
 					    <option value="Arial"<?php echo ($options['top_nav_font_family'] == 'Arial') ? ' selected="selected"' : ''; ?>>Arial</option>
 					    <option value="Comic Sans MS"<?php echo ($options['top_nav_font_family'] == 'Comic Sans MS') ? ' selected="selected"' : ''; ?>>Comic Sans MS</option>
@@ -1641,7 +1669,7 @@ class UDESIGN_Theme_Options {
 					</select>
 				</label>
 				<label for="top_nav_font_size" style="float:left; width:100px;">
-					<?php esc_html_e('Font Size: ', 'udesign'); ?>
+					<?php esc_html_e('字体大小: ', 'udesign'); ?>
 					<select name="udesign_options[top_nav_font_size]" id="top_nav_font_size">
 					    <option value="8"<?php echo ($options['top_nav_font_size'] == '8') ? ' selected="selected"' : ''; ?>>8px</option>
 					    <option value="9"<?php echo ($options['top_nav_font_size'] == '9') ? ' selected="selected"' : ''; ?>>9px</option>
@@ -1671,11 +1699,11 @@ class UDESIGN_Theme_Options {
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Title Headings Font Settings', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('标题字体设置', 'udesign'); ?></th>
 			    <td>
-				<div><?php esc_html_e("This font is applied to all h1, h2, h3, h4, h5, h6 - Headings (with small exceptions) and  the Slogan (Tagline):", 'udesign'); ?></div>
+				<div><?php esc_html_e("h1, h2, h3, h4, h5, h6 - Headings (with small exceptions) and  the Slogan (Tagline):", 'udesign'); ?></div>
 				<label for="title_headings_font_family" style="float:left; width:220px;">
-				    <?php esc_html_e('Font Family: ', 'udesign'); ?><br />
+				    <?php esc_html_e('字体: ', 'udesign'); ?><br />
 				    <select name="udesign_options[title_headings_font_family]" id="title_headings_font_family" style="width:200px;">
 					    <option value="Arial"<?php echo ($options['title_headings_font_family'] == 'Arial') ? ' selected="selected"' : ''; ?>>Arial</option>
 					    <option value="Comic Sans MS"<?php echo ($options['title_headings_font_family'] == 'Comic Sans MS') ? ' selected="selected"' : ''; ?>>Comic Sans MS</option>
@@ -1704,7 +1732,7 @@ class UDESIGN_Theme_Options {
 				    </select>
 				</label>
 				<label for="heading_font_size_coefficient" style="float:left; width:130px;">
-					<?php esc_html_e('Font Size Coefficient: ', 'udesign'); ?><br />
+					<?php esc_html_e('字体大小系数: ', 'udesign'); ?><br />
 					<select name="udesign_options[heading_font_size_coefficient]" id="heading_font_size_coefficient">
 					    <option value="0.2"<?php echo ($options['heading_font_size_coefficient'] == '0.2') ? ' selected="selected"' : ''; ?>>0.2</option>
 					    <option value="0.4"<?php echo ($options['heading_font_size_coefficient'] == '0.4') ? ' selected="selected"' : ''; ?>>0.4</option>
@@ -1734,10 +1762,10 @@ class UDESIGN_Theme_Options {
     		<table class="form-table" style="background-color:#F9F9F9; border:1px solid #DDDDDD;">
 		    <tbody>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Custom Colors Switch', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('自定义颜色开关', 'udesign'); ?></th>
 			    <td>
 				<span class="description"><?php esc_html_e("If enabled this option will overwrite the default CSS styles.", 'udesign'); ?></span><br />
-				<?php esc_html_e('Custom colors option:', 'udesign'); ?><br />
+				<?php esc_html_e('自定义颜色选项:', 'udesign'); ?><br />
 				<label><input type="radio" name="udesign_options[custom_colors_switch]" id="custom_colors_switch_enable" value="enable" <?php checked('enable', $options['custom_colors_switch']); ?> /> <?php esc_html_e('Enable', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[custom_colors_switch]" id="custom_colors_switch_disable" value="disable" <?php checked('disable', $options['custom_colors_switch']); ?> /> <?php esc_html_e('Disable', 'udesign'); ?></label>
 				<br />
@@ -4805,16 +4833,16 @@ class UDESIGN_Theme_Options {
 		<table class="form-table">
 		    <tbody>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Sidebar Position', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('侧边栏的位置', 'udesign'); ?></th>
 			    <td><?php  ?>
-				<?php esc_html_e('Choose position:', 'udesign'); ?> <br />
+				<?php esc_html_e('位置:', 'udesign'); ?> <br />
 				<label><input type="radio" name="udesign_options[blog_sidebar]" id="blog_sidebar_left" value="left" <?php checked('left', $blog_sidebar); ?> /> <?php esc_html_e('Left', 'udesign'); ?></label>&nbsp;&nbsp;
 				<label><input type="radio" name="udesign_options[blog_sidebar]" id="blog_sidebar_right" value="right" <?php checked('right', $blog_sidebar); ?> /> <?php esc_html_e('Right', 'udesign'); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span class="description"><?php esc_html_e('This is the sidebar shown on blog pages', 'udesign'); ?></span>
+				<span class="description"><?php esc_html_e('blog pages', 'udesign'); ?></span>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Show Excerpt', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('显示摘要', 'udesign'); ?></th>
 			    <td>
 				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Exclude Portfolio(s) from Blog', 'udesign'); ?></span></legend>
 				<label for="show_excerpt">
@@ -4825,9 +4853,9 @@ class UDESIGN_Theme_Options {
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><label for="excerpt_length_in_words"><?php esc_html_e('Excerpt Length', 'udesign'); ?></label></th>
+			    <th scope="row"><label for="excerpt_length_in_words"><?php esc_html_e('摘要长度', 'udesign'); ?></label></th>
 			    <td>
-				<?php esc_html_e('Change the excerpt length:', 'udesign'); ?> <input name="udesign_options[excerpt_length_in_words]" type="text" id="excerpt_length_in_words" value="<?php echo esc_attr( $options['excerpt_length_in_words'] ); ?>" size="5" maxlength="5" /> 
+				<?php esc_html_e('摘要长度:', 'udesign'); ?> <input name="udesign_options[excerpt_length_in_words]" type="text" id="excerpt_length_in_words" value="<?php echo esc_attr( $options['excerpt_length_in_words'] ); ?>" size="5" maxlength="5" />
 				<span class="description"><?php esc_html_e('This number refers to the number of words to show.', 'udesign'); ?></span>
 			    </td>
 			</tr>
@@ -4851,32 +4879,32 @@ class UDESIGN_Theme_Options {
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Show Post Author', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('显示文章的作者', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Show Post Author', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('显示文章的作者', 'udesign'); ?></span></legend>
 				<label for="show_postmetadata_author">
 				    <input name="udesign_options[show_postmetadata_author]" type="checkbox" id="show_postmetadata_author" value="yes" <?php checked('yes', $options['show_postmetadata_author']); ?> />
-				    <?php esc_html_e('Show Author Name', 'udesign'); ?><br />
+				    <?php esc_html_e('显示文章的作者', 'udesign'); ?><br />
 				    <span class="description"><?php  printf( __('The following text: "Written by: Author Name" will be added to the postmetadata box. The author\'s name will be displayed as specified under %1$sUsers -> Your Profile%2$s <strong>Display name publicly as</strong> field and linking it to the author\'s page.', 'udesign'), '<a href="profile.php">', '</a>' ); ?></span>
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Post Tags', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('文章标签', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Post Tags', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('文章标签', 'udesign'); ?></span></legend>
 				<label for="show_postmetadata_tags">
 				    <input name="udesign_options[show_postmetadata_tags]" type="checkbox" id="show_postmetadata_tags" value="yes" <?php checked('yes', $options['show_postmetadata_tags']); ?> />
-				    <?php esc_html_e('Show Post Tags', 'udesign'); ?><br />
+				    <?php esc_html_e('文章标签', 'udesign'); ?><br />
 				</label>
 				</fieldset>
 			    </td>
 			</tr>
 			<tr valign="top">
-			    <th scope="row"><?php esc_html_e('Category Archive Title', 'udesign'); ?></th>
+			    <th scope="row"><?php esc_html_e('类别档案标题', 'udesign'); ?></th>
 			    <td>
-				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('Category Archive Title', 'udesign'); ?></span></legend>
+				<fieldset><legend class="screen-reader-text"><span><?php esc_html_e('类别档案标题', 'udesign'); ?></span></legend>
 				<label for="show_archive_for_string">
 				    <input name="udesign_options[show_archive_for_string]" type="checkbox" id="show_archive_for_string" value="yes" <?php checked('yes', $options['show_archive_for_string']); ?> />
 				    <?php esc_html_e('Remove the "Archive for the \'...\' Category" string from the category archive title.', 'udesign'); ?><br />
@@ -5338,7 +5366,7 @@ function display_save_changes_button() {
 				<td>
 				    <div class="submit" style="padding:10px 0 0 80px; float:right; clear:both;">
 					<input type="hidden" id="udesign_submit" value="1" name="udesign_submit"/>
-					<input class="button-primary" type="submit" name="submit" value="'.esc_attr__('Save Changes', 'udesign').'" />
+					<input class="button-primary" type="submit" name="submit" value="'.esc_attr__('保存', 'udesign').'" />
 				    </div>
 				</td>
 			    </tr>
